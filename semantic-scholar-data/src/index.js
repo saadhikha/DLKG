@@ -1,18 +1,33 @@
 import fetch from "node-fetch"
-import { appendFileSync, writeFileSync } from "fs"
+import { appendFileSync, writeFileSync, readFileSync } from "fs"
 
 const API_KEY = "woZhcbJHSS582OzTD5l952d7xMZwJO3P7FSgNlel"
 const MAX_RETRIES = 3
 const BASE_URL = "https://api.semanticscholar.org"
-const MAX_PAPER_COUNT = 5000
+const MAX_PAPER_COUNT = 1000000
 const MIN_CITATION_COUNT = 50
 const BASE_HEADERS = {
   'Content-Type': 'application/json',
   'x-api-key': API_KEY
 }
-const CSV_FILE = 'data.csv'
+const CSV_FILE = 'data-final-2.csv'
 let totalPaperCount = 0
 const paperIds = new Set()
+
+/**
+ * read csv file using readFileSync and get all paper ids
+ */
+function readExistingDataset() {
+  const csv = readFileSync('okdata.csv', 'utf-8');
+  const lines = csv.split('\n');
+  for (const line of lines) {
+    const paperId = line.split(',')[0];
+    if (paperId) paperIds.add(paperId);
+  }
+  return paperIds;
+}
+readExistingDataset()
+console.log(paperIds)
 
 async function retryingFetch(url, options) {
   url = `${BASE_URL}/${url}`
@@ -24,7 +39,7 @@ async function retryingFetch(url, options) {
       return data
     } catch (error) {
       if (retryCount < MAX_RETRIES) {
-        console.log(`Retrying... Attempt number ${retryCount + 1}`);
+        console.log(`Retrying... Attempt number ${retryCount + 1}, `, `${error}`);
         return await retryingFetchInternal(retryCount + 1);
       } else {
         console.error(`Fetch error of: ${url}`, error);
@@ -36,7 +51,7 @@ async function retryingFetch(url, options) {
 }
 
 async function fetchPaper(paperId, fields=null) {
-  fields = fields ?? ["url", "year", "title", "authors"]
+  fields = fields ?? ["url", "year", "title", "authors", "s2FieldsOfStudy", "venue"]
   return await retryingFetch(`graph/v1/paper/${paperId}?fields=${fields.join(",")}`)
 }
 
@@ -76,6 +91,8 @@ function writePaperToCsv(data) {
       data.paperId,
       quoteScope(data.title),
       data.year,
+      data.venue,
+      quoteScope(data.fieldsOfStudy.join(',')),
       quoteScope(data.authors.join(',')),
       quoteScope(data.citations.join(','))
   ].join(',') + '\n';
@@ -85,11 +102,13 @@ function writePaperToCsv(data) {
 
 async function buildDatasetWithPaper(entryPaperId) {
   const paper = await fetchPaper(entryPaperId)
-  if (!paper) return
+  if (!paper || !paper.paperId) return
   const paperData = {
     paperId: paper.paperId,
-    title: paper.title,
+    title: paper.title.replace(/\n/g, ' ').replace(/"/g, "'"),
     year: paper.year,
+    venue: paper.venue,
+    fieldsOfStudy: [...new Set(paper.s2FieldsOfStudy.map(field => field.category))],
     authors: paper.authors?.map(author => author.name) ?? [],
     citations: await getValidCitations(entryPaperId)
   }
@@ -103,16 +122,31 @@ async function buildDatasetWithPaper(entryPaperId) {
 }
 async function buildDataset(entryPaperId, resume=false) {
   if (!resume) {
-    writeFileSync(CSV_FILE, 'paperId,title,year,authors,citations\n');
+    writeFileSync(CSV_FILE, 'paperId,title,year,fieldsOfStudy,authors,citations\n');
   }
   await buildDatasetWithPaper(entryPaperId)
 }
 
 // resnet
-let pid = "b5c26ab8767d046cb6e32d959fdf726aee89bb62"
+buildDataset("b5c26ab8767d046cb6e32d959fdf726aee89bb62")
 
-// pid = "3813b88a4ec3c63919df47e9694b577f4691f7e5"
+// bert
+buildDataset("df2b0e26d0599ce3e70df8a9da02e51594e0e992")
 
-// pid = "3a906b77fa218adc171fecb28bb81c24c14dcc7b"
+// fast rcnn
+buildDataset("424561d8585ff8ebce7d5d07de8dbf7aae5e7270")
 
-buildDataset(pid)
+// nerf
+buildDataset("428b663772dba998f5dc6a24488fff1858a0899f")
+
+// unet
+buildDataset("6364fdaa0a0eccd823a779fcdd489173f938e91a")
+
+// transformer
+buildDataset("204e3073870fae3d05bcbc2f6a8e263d9b72e776")
+
+// gpt
+buildDataset("cd18800a0fe0b668a1cc19f2ec95b5003d0a5035")
+
+// rl
+buildDataset("aee6d6b3282662b69a1020c95be725e0075428bd")
