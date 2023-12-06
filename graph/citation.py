@@ -29,6 +29,7 @@ def build_citation_graph(df):
     G.add_node(paperId)
     # Add author names, venue, and title as node attributes
     G.nodes[paperId]['authors'] = authors
+    G.nodes[paperId]['author0'] = f"{str(authors).split(',')[0]}, et al."
     G.nodes[paperId]['venue'] = venue
     G.nodes[paperId]['title'] = title
     G.nodes[paperId]['year'] = year
@@ -77,7 +78,7 @@ def create_subgraph(G, top_n):
 
 
 # Build a subgraph of the top n most cited papers
-def create_subgraph_around_top_degrees(G, num_nodes_around=30, top_n_degrees=1000):
+def create_subgraph_around_top_degrees(G, num_nodes_around=100, top_n_degrees=500):
   # Get the degree of all nodes
   degrees = dict(G.degree())
 
@@ -119,7 +120,7 @@ def draw_citation_graph(G):
   nx.draw(G, pos, with_labels=False, node_size=node_sizes, node_color='lightblue', edge_color='gray', arrowsize=10)
 
   # Add labels for authors' names
-  labels = {node: G_all.nodes[node]['title'] for node in G if 'title' in G_all.nodes[node]}  # Replace 'author' with the correct attribute name
+  labels = {node: G_all.nodes[node]['author0'] for node in G if 'author0' in G_all.nodes[node]}  # Replace 'author' with the correct attribute name
   nx.draw_networkx_labels(G, pos, labels, font_size=8)
 
   plt.title('Citation Network (Top 15 Most Cited Papers)')
@@ -148,7 +149,7 @@ def most_cited_venue(df):
 
   plt.figure(figsize=(12, 6))
   plt.barh(venues, venue_citation_counts, color='skyblue')
-  plt.xlabel('Citation Count')
+  plt.xlabel('Paper Count by Venue')
   plt.ylabel('Venue')
   # Venue names are too long, 把name放在图上而不是坐标上
   for i, count in enumerate(venue_citation_counts):
@@ -156,7 +157,7 @@ def most_cited_venue(df):
 
   plt.gca().invert_yaxis()
   plt.yticks([])
-  plt.title('Top 30 Cited Venues')
+  plt.title('Top 30 Venues')
   plt.show()
   
   return most_cited_venue, citation_count
@@ -184,20 +185,29 @@ def citation_counts_by_year(df):
   plt.figure(figsize=(12, 6))
   plt.bar(years, citation_counts, color='lightcoral')
   plt.xlabel('Year')
-  plt.ylabel('Citation Count')
-  plt.title('Citation Counts by Year (2016-2022)')
+  plt.ylabel('Paper Count')
+  plt.title('Papers by Year (2016-2022)')
   plt.xticks(years)
   plt.show()
+
+# Get the most cited paper
+def most_cited_paper(df):
+  df['citationCount'] = df['citations'].apply(lambda x: len(str(x).split(',')))
+  max_citation = df['citationCount'].max()
+  paper = df[df['citationCount'] == max_citation]
+
+  print(paper)
 
 if __name__ == '__main__':
   file_path = '../data/data-full-100k.csv'
   df = load_citation_data(file_path)
+  # most_cited_paper(df)
   most_cited_venue(df)
   citation_counts_by_year(df)
-  G = build_citation_graph(citation_pairs, df)
-  results = analyze_citation_network(G)
-  print("Citation Network Analysis Results:")
-  for key, value in results.items():
-      print(f"{key}: {value}")
+  # G = build_citation_graph(df)
+  # results = analyze_citation_network(G)
+  # print("Citation Network Analysis Results:")
+  # for key, value in results.items():
+  #     print(f"{key}: {value}")
 
-  draw_citation_graph(G)
+  # draw_citation_graph(G)
