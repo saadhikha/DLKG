@@ -5,7 +5,7 @@
 2. Author Network (author.py)
 3. Fields of Study Network (fieldOfStudy.py)
 
-For graphs 1 and 2, due to their size a separate visulaization for their respective subgraphs is included in Citation-Graph 1-visualization-2.py and Author-Graph 2-visualization.py. All the secondary plots and inferences derived from our networks are contained in other inferences.py.
+For graphs 1 and 2, due to their size a separate visulaization for their respective subgraphs is included in Citation-Graph 1-visualization-2.py and Author-Graph 2-visualization.py. All the secondary plots and inferences derived from our networks are contained in other inferences.py. Files are in Python and can be compiled locally.
 
 ## Network features
 
