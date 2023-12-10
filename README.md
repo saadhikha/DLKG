@@ -3,22 +3,22 @@ This repository contains the code and data necessary to build and analyze deep l
 
 ## Understanding the graphs
 ### Paper Network
-Nodes: Represent scholarly articles in the domain of deep learning.
-Node Attributes: Title, Authors, Year of Publication, Venue, Authors, Fields of Study, etc.
-Edges: Represent citation relationships between papers.
-Directionality: Edges are directional, signifying the direction of the citation from the citing to the cited paper.
+*Nodes: Represent scholarly articles in the domain of deep learning.
+*Node Attributes: Title, Authors, Year of Publication, Venue, Authors, Fields of Study, etc.
+*Edges: Represent citation relationships between papers.
+*Directionality: Edges are directional, signifying the direction of the citation from the citing to the cited paper.
 
 ### Author Network
-Nodes: Represent different authors
-Node Attributes: Author name, Author homepage.
-Edges: Represent co authorship relationships between the authors.
-Directionality: Edges are undirected
+*Nodes: Represent different authors
+*Node Attributes: Author name, Author homepage.
+*Edges: Represent co authorship relationships between the authors.
+*Directionality: Edges are undirected
 
 ### Field of Study Network
-Nodes: Represent fields of study, like 'medicine', 'mathematics', 'computer science'
-Node Attributes: Number of papers published in that field
-Edges: Represent the intersection of two academic fields through shared research papers
-Directionality: Edges are undirected
+*Nodes: Represent fields of study, like 'medicine', 'mathematics', 'computer science'
+*Node Attributes: Number of papers published in that field
+*Edges: Represent the intersection of two academic fields through shared research papers
+*Directionality: Edges are undirected
 
 ## Directory Structure
 * data/: Contains CSV files with various sizes of data sets used for constructing and training our knowledge graph.
