@@ -201,13 +201,13 @@ def most_cited_paper(df):
 if __name__ == '__main__':
   file_path = '../data/data-full-100k.csv'
   df = load_citation_data(file_path)
-  # most_cited_paper(df)
+  most_cited_paper(df)
   most_cited_venue(df)
   citation_counts_by_year(df)
-  # G = build_citation_graph(df)
-  # results = analyze_citation_network(G)
-  # print("Citation Network Analysis Results:")
-  # for key, value in results.items():
-  #     print(f"{key}: {value}")
+  G = build_citation_graph(df)
+  results = analyze_citation_network(G)
+  print("Citation Network Analysis Results:")
+  for key, value in results.items():
+      print(f"{key}: {value}")
 
-  # draw_citation_graph(G)
+  draw_citation_graph(G)

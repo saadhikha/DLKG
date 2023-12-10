@@ -131,9 +131,9 @@ def top_authors_with_paper(df, top_n=20):
 if __name__ == '__main__':
   file_path = '../data/data-full-100k.csv'
   df = load_and_preprocess_data(file_path)
-  # top_authors_with_citation(df)
+  top_authors_with_citation(df)
   top_authors_with_paper(df)
 
-  # G = build_author_network(df)
-  # analyze_network(G)
-  # draw_author_network(G)
+  G = build_author_network(df)
+  analyze_network(G)
+  draw_author_network(G)
