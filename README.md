@@ -38,10 +38,10 @@ Directionality: Edges are undirected\
 
 
 * graph/: Scripts for graph construction and analysis.
-  * Author-Graph2-Metrics.py: Computes and analyzes metrics related to authors in the knowledge graph.
+  * Author-Graph2-Metrics.py: Computes and analyzes metrics related to authors in the knowledge graph (Initial version).
   * Author-Graph2-visualization.py: Generates visualizations for the author-centric components of the graph.
   * Otherinferences.py: Script for additional inference tasks on the graph.
-  * Paper-citations-Graph1-Metrics.py: Assesses metrics associated with paper citations.
+  * Paper-citations-Graph1-Metrics.py: Assesses metrics associated with paper citations (Initial version).
   * Citation-Graph1-visualization-2.py: Provides tools for visualizing citation networks.
 
   * citation.py: Defines and analyses citation network in this graph(final version).
